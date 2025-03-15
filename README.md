@@ -28,7 +28,7 @@ Caso o número não esteja no formato correto, o bot pedirá novamente até que 
 Etapa 4: Confirmação do Número
 Após a validação do número de telefone, o bot confirma com o usuário:
 
-“Só para confirmar. Esse número +55 (61) 99272-4480, está correto?”
+“Só para confirmar. Esse número , está correto?”
 
 Em seguida, aparecem dois botões:
 
