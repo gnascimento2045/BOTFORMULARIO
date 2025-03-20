@@ -1,110 +1,123 @@
-// script.js
-document.addEventListener("DOMContentLoaded", function () {
+const SUPABASE_URL = "https://jpxthqrntaqczftqaofs.supabase.co";
+const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpweHRocXJudGFxY3pmdHFhb2ZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE5OTU4MTcsImV4cCI6MjA1NzU3MTgxN30._CWzAU5HTVSe98BJa95fQG96qOwd5iodnSSAYxfn0QU";
+
+// Variáveis globais para armazenar os dados
+let userName = '';
+let userPhone = '';
+
+// Função para exibir uma mensagem do bot
+function displayMessage(message, sender) {
     const chatBox = document.getElementById("chatBox");
-    const userInput = document.getElementById("userInput");
-    const sendButton = document.querySelector("button");
-    let step = 0;
-    let userName = "";
-    let userPhone = "";
+    const messageDiv = document.createElement("div");
+    messageDiv.classList.add("message", sender);
+    messageDiv.innerText = message;
+    chatBox.appendChild(messageDiv);
+    chatBox.scrollTop = chatBox.scrollHeight; // Rola para o final da conversa
+}
 
-    function appendMessage(text, sender) {
-        const message = document.createElement("div");
-        message.classList.add("message", sender);
-        message.innerText = text;
-        chatBox.appendChild(message);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
+// Função para iniciar a conversa automaticamente assim que a página carrega
+function startConversation() {
+    displayMessage("👋 Olá! Quer solicitar uma simulação de crédito de forma rápida? Preencha o formulário abaixo e receba sua simulação personalizada! 🔽", "bot");
 
-    function showInputField(placeholder, buttonText) {
-        userInput.style.display = "block";
-        userInput.placeholder = placeholder;
-        sendButton.innerText = buttonText;
-        sendButton.style.display = "block";
-    }
+    setTimeout(() => {
+        showStartButton();
+    }, 1000);
+}
 
-    function formatPhoneNumber(number) {
-        number = number.replace(/\D/g, "");
-        if (number.length === 11) {
-            return `(${number.slice(0,2)}) ${number.slice(2,7)}-${number.slice(7)}`;
-        }
-        return null;
-    }
+// Exibe o botão para o usuário iniciar a conversa
+function showStartButton() {
+    const inputContainer = document.getElementById("input-container");
+    inputContainer.innerHTML = `<button onclick="showNameForm()">INICIAR CONVERSA</button>`;
+}
 
-    function nextStep() {
-        const userText = userInput.value.trim();
-        if (userText === "") return;
+// Exibe o formulário para coletar o nome
+function showNameForm() {
+    displayMessage("Perfeito!! Digite seu nome e sobrenome? 👇", "bot");
 
-        appendMessage(userText, "user");
-        userInput.value = "";
+    const inputContainer = document.getElementById("input-container");
+    inputContainer.innerHTML = `<input type="text" id="name" placeholder="Digite seu nome e sobrenome" required>`;
+    inputContainer.innerHTML += `<button onclick="saveName()">Próximo</button>`;
 
-        if (step === 1) {
-            userName = userText;
-            setTimeout(() => {
-                appendMessage(`${userName}, digite seu número de telefone WhatsApp com DDD 👇`, "bot");
-                showInputField("", "ENVIAR");
-                step++;
-            }, 1000);
-        } else if (step === 2) {
-            const formattedNumber = formatPhoneNumber(userText);
-            if (!formattedNumber) {
-                appendMessage("Número inválido. Digite um número válido!", "bot");
-                return;
-            }
-            userPhone = formattedNumber;
-            setTimeout(() => {
-                appendMessage(`Só para confirmar. Esse número ${userPhone}, está correto?`, "bot");
-                chatBox.innerHTML += '<div class="message bot"><button onclick="confirmPhone(true)">Sim</button> <button onclick="confirmPhone(false)">Digitei errado</button></div>';
-                userInput.style.display = "none";
-                sendButton.style.display = "none";
-            }, 1000);
-            step++;
-        } else if (step === 4) {
-            setTimeout(() => {
-                appendMessage("Cadastro Realizado\nAguarde que logo entraremos em contato.", "bot");
-            }, 1000);
-        }
-    }
-
-    window.confirmPhone = function (correct) {
-        if (correct) {
-            appendMessage("Sim", "user");
-            setTimeout(() => {
-                appendMessage("Qual seu melhor e-mail?", "bot");
-                showInputField("Seu melhor e-mail", "ENVIAR");
-                step++;
-            }, 1000);
-        } else {
-            appendMessage("Digitei errado", "user");
-            setTimeout(() => {
-                appendMessage("Digite novamente o numero", "bot");
-                showInputField("", "ENVIAR");
-                step = 2;
-            }, 1000);
-        }
-    };
-
-    document.getElementById("userInput").addEventListener("keypress", function (event) {
+    // Adiciona evento para enviar a mensagem ao pressionar ENTER
+    const nameInput = document.getElementById("name");
+    nameInput.addEventListener("keydown", function(event) {
         if (event.key === "Enter") {
-            event.preventDefault();
-            nextStep();
+            saveName();
         }
     });
+}
 
-    sendButton.addEventListener("click", nextStep);
+// Salva o nome inserido pelo usuário e exibe a próxima pergunta
+function saveName() {
+    const nameInput = document.getElementById("name").value;
+    if (!nameInput) {
+        alert("Por favor, digite seu nome.");
+        return;
+    }
 
-    // Iniciar conversa automaticamente
-    setTimeout(() => {
-        appendMessage("👋 Olá! Quer solicitar uma simulação de crédito de forma rápida? Preencha o formulário abaixo e receba sua simulação personalizada! 🔽", "bot");
-        chatBox.innerHTML += '<div class="message bot"><button onclick="startChat()">INICIAR</button></div>';
-    }, 1000);    
+    userName = nameInput;  // Armazena o nome na variável global
+    displayMessage(userName, "user");  // Exibe a resposta do usuário à direita
+    displayMessage(`${userName}, digite seu número de telefone WhatsApp com DDD 👇`, "bot");
 
-    window.startChat = function () {
-        document.querySelector("button").remove();
-        appendMessage("INICIAR", "user");
-        setTimeout(() => {
-            appendMessage("Perfeito!! Digite seu nome e sobrenome? 👇", "bot");
-            showInputField("Nome e Sobrenome", "ENVIAR");
-            step = 1;
-        }, 1000);
+    const inputContainer = document.getElementById("input-container");
+    inputContainer.innerHTML = `<input type="text" id="phone" placeholder="Ex: (11) 98765-4321" required>`;
+    inputContainer.innerHTML += `<button onclick="savePhone()">Próximo</button>`;
+
+    // Adiciona evento para enviar a mensagem ao pressionar ENTER
+    const phoneInput = document.getElementById("phone");
+    phoneInput.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            savePhone();
+        }
+    });
+}
+
+// Salva o telefone inserido pelo usuário e envia os dados
+function savePhone() {
+    const phoneInput = document.getElementById("phone").value;
+    if (!phoneInput) {
+        alert("Por favor, digite seu número de telefone.");
+        return;
+    }
+
+    userPhone = phoneInput;  // Armazena o telefone na variável global
+    displayMessage(userPhone, "user");  // Exibe a resposta do usuário à direita
+    displayMessage(`✅ Cadastro Realizado! Aguarde que logo entraremos em contato.`, "bot");
+
+    // Agora você pode enviar os dados para a API
+    submitData();
+}
+
+// Envia os dados para o Supabase
+function submitData() {
+    const payload = {
+        nome: userName,
+        telefone: userPhone
     };
-});
+
+    const headers = {
+        "Content-Type": "application/json",
+        "apikey": API_KEY,
+        "Authorization": `Bearer ${API_KEY}`
+    };
+
+    fetch(`${SUPABASE_URL}/rest/v1/FormCliente`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(payload)
+    })
+    .then(response => {
+        if (response.ok) {
+
+        } else {
+            alert("Erro ao realizar cadastro. Tente novamente.");
+        }
+    })
+    .catch(error => {
+        console.error("Erro na solicitação:", error);
+        alert("Erro na comunicação com o servidor. Tente novamente.");
+    });
+}
+
+// Inicia a conversa assim que a página for carregada
+window.onload = startConversation;

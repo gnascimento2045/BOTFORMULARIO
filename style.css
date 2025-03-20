@@ -25,18 +25,19 @@ body {
   margin: 0;
   overflow: hidden;
   font-family: 'Sora', sans-serif;
-  background-color: #121212;
+  background-color: #121212; /* Fundo escuro */
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  color: white; /* Texto branco por padrão */
 }
 
 .chat-container {
   width: 100%;
   max-width: 500px;
   height: 80vh;
-  background: #000;
+  background: #121212; /* Fundo escuro */
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   display: flex;
@@ -61,22 +62,22 @@ body {
 }
 
 .bot {
-  background: #ffffff;
-  color: #000;
-  align-self: flex-start;
+  background: #ffffff;  /* Cor branca para a mensagem do bot */
+  color: #000;  /* Texto preto */
+  align-self: flex-start;  /* Alinhamento à esquerda */
 }
 
 .user {
-  background: #25D366;
-  color: #000;
-  align-self: flex-end;
+  background: #25D366;  /* Caixa verde para a mensagem do usuário */
+  color: white;  /* Texto branco */
+  align-self: flex-end;  /* Alinhamento à direita */
 }
 
 .input-container {
   display: flex;
   padding: 10px;
   border-top: 1px solid #333;
-  background: #000;
+  background: #121212; /* Fundo escuro */
 }
 
 input {
@@ -84,8 +85,8 @@ input {
   padding: 10px;
   border: 1px solid #333;
   border-radius: 5px;
-  background: #222;
-  color: white;
+  background: #333; /* Fundo escuro para o campo de input */
+  color: white; /* Texto branco no input */
 }
 
 button {
