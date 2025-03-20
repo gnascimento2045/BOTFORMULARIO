@@ -17,17 +17,20 @@ function displayMessage(message, sender) {
 
 // Função para iniciar a conversa automaticamente assim que a página carrega
 function startConversation() {
-    displayMessage("👋 Olá! Quer solicitar uma simulação de crédito de forma rápida? Preencha o formulário abaixo e receba sua simulação personalizada! 🔽", "bot");
-
+    displayMessage("👋Seja Bem Vindo! \n 😊 Vi que você deseja uma simulação de crédito. \n Preencha o formulário e nossos consultores entrarão em contato com você em breve! 🚀🔽", "bot");
     setTimeout(() => {
         showStartButton();
-    }, 1000);
+    }, 500);
+   
 }
+
+
+
 
 // Exibe o botão para o usuário iniciar a conversa
 function showStartButton() {
     const inputContainer = document.getElementById("input-container");
-    inputContainer.innerHTML = `<button onclick="showNameForm()">INICIAR CONVERSA</button>`;
+    inputContainer.innerHTML = `<buttonnew onclick="showNameForm()">INICIAR CONVERSA</buttonnew>`;
 }
 
 // Exibe o formulário para coletar o nome
@@ -57,7 +60,7 @@ function saveName() {
 
     userName = nameInput;  // Armazena o nome na variável global
     displayMessage(userName, "user");  // Exibe a resposta do usuário à direita
-    displayMessage(`${userName}, digite seu número de telefone WhatsApp com DDD 👇`, "bot");
+    displayMessage(`Certo ${userName}, Poderia me informar seu número de telefone WhatsApp com DDD 👇`, "bot");
 
     const inputContainer = document.getElementById("input-container");
     inputContainer.innerHTML = `<input type="text" id="phone" placeholder="Ex: (11) 98765-4321" required>`;
@@ -84,6 +87,10 @@ function savePhone() {
     displayMessage(userPhone, "user");  // Exibe a resposta do usuário à direita
     displayMessage(`✅ Cadastro Realizado! Aguarde que logo entraremos em contato.`, "bot");
 
+    // Desabilita o formulário e o botão para impedir novos envios
+    const inputContainer = document.getElementById("input-container");
+    inputContainer.innerHTML = "";  // Remove o formulário e o botão
+
     // Agora você pode enviar os dados para a API
     submitData();
 }
@@ -108,7 +115,7 @@ function submitData() {
     })
     .then(response => {
         if (response.ok) {
-
+            // Caso necessário, você pode adicionar mais lógica aqui para verificar o sucesso do envio
         } else {
             alert("Erro ao realizar cadastro. Tente novamente.");
         }
